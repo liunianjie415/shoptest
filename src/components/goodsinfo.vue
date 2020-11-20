@@ -1,13 +1,93 @@
 <template>
-    <div>商品信息</div>
+<el-card class="box-card">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>商品管理</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/ginfo' }">商品信息</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/gtype' }">商品类别</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-row class="gsearch">
+        <el-col>
+            <el-input placeholder="请输入搜素内容" clearable class="searchinput" v-model="query">
+                <el-button slot="append" icon="el-icon-search"></el-button>
+            </el-input>
+            <el-button type="success" class="addbtn">添加商品</el-button>
+        </el-col>
+    </el-row>
+    <el-table :data="tableData" border style="width: 100%" class="gtable">
+        <el-table-column type="index" label="序号" width="60">
+        </el-table-column>
+        <el-table-column prop="" label="商品编号" width="100">
+        </el-table-column>
+        <el-table-column prop="" label="商品名称" width="160">
+        </el-table-column>
+        <el-table-column prop="" label="商品规格" width="100">
+        </el-table-column>
+        <el-table-column prop="" label="商品价格" width="100">
+        </el-table-column>
+        <el-table-column label="操作">
+            <template slot-scope="">
+                <el-button type="primary" icon="el-icon-edit" circle plain></el-button>
+                <el-button type="danger" icon="el-icon-delete" circle plain></el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+     <el-pagination
+     class="gpage"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="1"
+      :page-sizes="[5, 10, 15, 20]"
+      :page-size="2"
+      layout="total, prev, pager, next, jumper"
+      :total="400">
+    </el-pagination>
+</el-card>
 </template>
 
 <script>
 export default {
-
+    methods: {
+        handleClick(row) {
+            console.log(row);
+        },
+        handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        }
+    },
+    data() {
+        return {
+            query: '',
+            tableData: [{}, {}, {}, {}, {}, {}]
+        }
+    }
 }
 </script>
 
 <style>
+.box-card {
+    height: 100%;
+}
 
+.searchinput {
+    width: 300px;
+}
+
+.addbtn {
+    margin-left: 830px;
+}
+
+.gtable {
+    margin-top: 15px;
+}
+
+.gsearch {
+    margin-top: 15px;
+}
+
+.gpage {
+    margin-top: 15px;
+}
 </style>
