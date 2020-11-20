@@ -18,15 +18,91 @@
         </el-row>
     </el-header>
     <el-container>
-        <el-aside width="200px" class="aside">Aside</el-aside>
-        <el-main class="main">Main</el-main>
+        <el-aside width="200px" class="aside">
+            <el-menu
+            default-active="ginfo"
+            unique-opened
+            router>
+                <el-submenu index="1">
+                    <template slot="title">
+                        <i class="el-icon-goods"></i>
+                        <span>商品管理</span>
+                    </template>
+                    <el-menu-item-group>
+                        <el-menu-item index="ginfo">
+                            <i class="el-icon-s-grid"></i>
+                            <span>商品信息</span>
+                        </el-menu-item>
+                        <el-menu-item index="gtype">
+                            <i class="el-icon-s-grid"></i>
+                            <span>商品类别</span>
+                        </el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+                <el-menu-item index="store">
+                    <i class="el-icon-box"></i>
+                    <span slot="title">库存管理</span>
+                </el-menu-item>
+                <el-menu-item index="provide">
+                    <i class="el-icon-document"></i>
+                    <span slot="title">供应商管理</span>
+                </el-menu-item>
+                <el-submenu index="4">
+                    <template slot="title">
+                        <i class="el-icon-sell"></i>
+                        <span>销售管理</span>
+                    </template>
+                    <el-menu-item-group>
+                        <el-menu-item index="sinfo">
+                            <i class="el-icon-s-grid"></i>
+                            <span>销售信息</span>
+                        </el-menu-item>
+                        <el-menu-item index="sstat">
+                            <i class="el-icon-s-grid"></i>
+                            <span>统计报表</span>
+                        </el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+                <el-submenu index="5">
+                    <template slot="title">
+                        <i class="el-icon-user"></i>
+                        <span>员工管理</span>
+                    </template>
+                    <el-menu-item-group>
+                        <el-menu-item index="einfo">
+                            <i class="el-icon-s-grid"></i>
+                            <span>员工信息</span>
+                        </el-menu-item>
+                        <el-menu-item index="eauth">
+                            <i class="el-icon-s-grid"></i>
+                            <span>员工权限</span>
+                        </el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+                <el-menu-item index="disc">
+                    <i class="el-icon-discount"></i>
+                    <span slot="title">优惠管理</span>
+                </el-menu-item>
+                <el-menu-item index="bills">
+                    <i class="el-icon-setting"></i>
+                    <span slot="title">消费管理</span>
+                </el-menu-item>
+            </el-menu>
+        </el-aside>
+        <el-main class="main">
+            <router-view></router-view>
+        </el-main>
     </el-container>
 </el-container>
 </template>
 
 <script>
 export default {
+  data () {
+    return {
 
+    }
+  }
 }
 </script>
 
@@ -36,26 +112,31 @@ export default {
 }
 
 .header {
-    /* background-color: #b3c0d1; */
-    background-color: #487eb0;
+    /* background-color: deepskyblue; */
+    background:linear-gradient(to right, blueviolet, deepskyblue)
 }
-.header .logo img{
+
+.header .logo img {
     width: 50px;
     height: 50px;
 }
+
 .header .title {
     font-size: 36px;
     color: #fff;
     font-weight: bolder;
-    text-shadow: 2px 2px 4px #f40;
+    text-shadow: 4px 4px 6px #f40;
     text-align: center;
 }
+
 .header .loginout {
     text-align: right;
-    font-size: 40px;
+    font-size: 44px;
     cursor: pointer;
     text-shadow: 2px 2px 3px red;
+    color: blueviolet;
 }
+
 .aside {
     background-color: #dcdde1;
 }
