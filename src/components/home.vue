@@ -88,7 +88,7 @@
         </el-aside>
         <el-main class="main">
             <router-view>
-                <router-link :to="ginfo"></router-link>
+                <router-link :to="{path:'ginfo'}"></router-link>
             </router-view>
         </el-main>
     </el-container>
