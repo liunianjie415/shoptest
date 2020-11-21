@@ -1,24 +1,19 @@
 <template>
 <el-card class="box-card">
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>商品管理</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/ginfo' }">商品信息</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/gtype' }">商品类别</el-breadcrumb-item>
-    </el-breadcrumb>
     <el-row class="gsearch">
         <el-col>
-            <el-input placeholder="请输入搜素内容" clearable class="searchinput" v-model="query">
+            <el-input placeholder="请输入搜索内容" clearable class="searchinput" v-model="query">
                 <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
             <el-button type="success" class="addbtn">添加商品</el-button>
         </el-col>
     </el-row>
     <el-table :data="tableData" border style="width: 100%" class="gtable">
-        <el-table-column type="index" label="序号" width="60">
+        <el-table-column type="index" label="#" width="60">
         </el-table-column>
         <el-table-column prop="" label="商品编号" width="100">
         </el-table-column>
-        <el-table-column prop="" label="商品名称" width="160">
+        <el-table-column prop="" label="商品名称" width="200">
         </el-table-column>
         <el-table-column prop="" label="商品规格" width="100">
         </el-table-column>
@@ -73,10 +68,6 @@ export default {
 
 .searchinput {
     width: 300px;
-}
-
-.addbtn {
-    margin-left: 830px;
 }
 
 .gtable {

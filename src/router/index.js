@@ -26,6 +26,7 @@ export default new Router({
     {
       name: 'home',
       path: '/home',
+      redirect: '/ginfo',
       component: Home,
       children: [
         {
