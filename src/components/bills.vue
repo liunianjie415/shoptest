@@ -7,9 +7,7 @@
         </el-table-column>
         <el-table-column prop="" label="商品名称" width="160">
         </el-table-column>
-        <el-table-column prop="" label="规格" width="100">
-        </el-table-column>
-        <el-table-column prop="" label="数量" width="100">
+        <el-table-column prop="" label="消费数量" width="100">
         </el-table-column>
         <el-table-column prop="" label="折扣编号" width="100">
         </el-table-column>

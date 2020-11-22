@@ -24,6 +24,12 @@
             </template>
         </el-table-column>
     </el-table>
+    <el-row class="gtypebottom">
+        <el-col>
+            <el-button type="primary" icon="el-icon-back" circle></el-button>
+            <el-button type="primary" icon="el-icon-right" circle></el-button>
+        </el-col>
+    </el-row>
 </el-card>
 </template>
 
@@ -51,5 +57,8 @@ export default {
 }
 .gtsearchinput {
   width: 300px;
+}
+.gtypebottom {
+  margin-top: 20px;
 }
 </style>

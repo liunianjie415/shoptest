@@ -7,15 +7,13 @@
         </el-table-column>
         <el-table-column prop="" label="折扣名称" width="140">
         </el-table-column>
-        <el-table-column prop="" label="商品编号" width="80">
-        </el-table-column>
         <el-table-column prop="" label="商品名称" width="140">
         </el-table-column>
         <el-table-column prop="" label="打折力度" width="140">
         </el-table-column>
-        <el-table-column prop="" label="起始时间" width="80">
+        <el-table-column prop="" label="起始时间" width="100">
         </el-table-column>
-        <el-table-column prop="" label="结束时间" width="80">
+        <el-table-column prop="" label="结束时间" width="100">
         </el-table-column>
         <el-table-column prop="" label="状态" width="100">
         </el-table-column>

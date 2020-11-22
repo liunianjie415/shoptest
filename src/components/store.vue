@@ -13,8 +13,6 @@
         </el-table-column>
         <el-table-column prop="" label="库存编号" width="100">
         </el-table-column>
-        <el-table-column prop="" label="商品编号" width="100">
-        </el-table-column>
         <el-table-column prop="" label="商品名称" width="180">
         </el-table-column>
         <el-table-column prop="" label="库存数量" width="100">
