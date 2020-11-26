@@ -9,7 +9,7 @@
                 超市后台管理系统
             </el-col>
             <el-col :span="3" class="loginout">
-                <i class="el-icon-switch-button"></i>
+                <i class="el-icon-switch-button" @click.prevent="handlelogout()"></i>
             </el-col>
         </el-row>
     </el-header>
@@ -97,10 +97,18 @@
 
 <script>
 export default {
-  data () {
-    return {
-
+  beforeCreate() {
+    const user = localStorage.getItem('user')
+    if(!user) {
+        this.$router.push({name:'login'})
     }
+  },
+  methods: {
+      handlelogout() {
+          localStorage.clear()
+          this.$message.success('退出成功')
+          this.$router.push({name:'login'})
+      }
   }
 }
 </script>
