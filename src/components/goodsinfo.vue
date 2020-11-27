@@ -2,10 +2,10 @@
 <el-card class="box-card">
     <el-row class="gsearch">
         <el-col>
-            <el-input placeholder="请输入搜索内容" clearable class="searchinput" v-model="query">
-                <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-input placeholder="请输入商品名称" clearable class="searchinput" v-model="query" @keyup.enter.native="goodsSearch">
+                <el-button slot="append" icon="el-icon-search" @click="goodsSearch"></el-button>
             </el-input>
-            <el-button type="success" class="addbtn">添加商品</el-button>
+            <el-button type="success" class="addbtn" @click.prevent="addGoods">添加商品</el-button>
         </el-col>
     </el-row>
     <el-table :data="tableData" border style="width: 100%" class="gtable">
@@ -26,7 +26,7 @@
             </template>
         </el-table-column>
     </el-table>
-    <el-pagination class="gpage" @size-change="pageCount" @current-change="currentPage" layout="total, prev, pager, next, jumper" :total="totalPage" :page-size="pageCount">
+    <el-pagination class="gpage" @size-change="pageCount" @current-change="currentPage" :current-page.sync="currentNo" layout="total, prev, pager, next, jumper" :total="totalPage" :page-size="pageCount">
     </el-pagination>
 </el-card>
 </template>
@@ -49,50 +49,64 @@ export default {
         this.getPageTotal()
     },
     methods: {
-        // async getGoodsList() {
-        //     const res = await this.$http.get('showGoods')
-        //     const data = res.data
-        //     this.goodslist = data
-        //     this.total = data.length
-        // }
-
         //获取前6条数据
-        getData(index) {
+        async getData(index) {
             this.pageNo = index || this.pageNo
-            this.$http.post('showGoodsPage', {
+            const res = await this.$http.post('showGoodsPage', {
                 pagenum: this.pageNo,
                 pagesize: this.pageCount
-            }).then(res => {
-                // console.log(res.data.data);
-                this.tableData = res.data.data
-            }).catch(error => {
-                console.log(error);
             })
+            this.tableData = res.data
         },
         //当前页数据
-        currentPage(currentPage) {
-            this.currentNo = currentPage;
-            // console.log(this.currentNo)
+        currentPage() {
             this.getData(this.currentNo)
+            this.getSearchData(this.currentNo)
+            // console.log(this.currentNo)
         },
         //获取序号
         indexMethod(index) {
             return (this.currentNo - 1) * this.pageCount + index + 1;
         },
-        //获取总页数
-        getPageTotal() {
-            this.$http.get('showGoods').then(res => {
-                // console.log(res.data)
-                this.allData = res.data
-                // console.log(this.allData.length === 10);
-                this.totalPage = this.allData.length
-                // Math.ceil (this.allData.length / this.pageCount) * 6
-            }).catch(error => {
-                console.log(error)
+        //获取总页数及数据
+        async getPageTotal() {
+            const res = await this.$http.get('showGoods')
+            this.allData = res.data
+            this.totalPage = this.allData.length
+        },
+        // 搜索商品
+        // 获取前6条
+        async getSearchData(index) {
+            this.pageNo = index || this.pageNo
+            const res = await this.$http.post('searchGoods', {
+                query: this.query,
+                pagenum: this.pageNo,
+                pagesize: this.pageCount
+            })
+            this.tableData = res.data
+            // console.log(this.tableData);
+        },
+        // 获取搜索的总数据及总页数
+        async getSearchPageTotal() {
+            const res = await this.$http.post('searchGoods',{query:this.query})
+            this.allData = res.data
+            this.totalPage = this.allData.length
+            // console.log(this.allData, this.totalPage);
+        },
+        // 搜索按钮
+        goodsSearch() {
+            this.currentNo = 1
+            this.getSearchData()
+            this.getSearchPageTotal()
+            this.currentPage()
+        },
+        //添加商品
+        addGoods() {
+            this.$alert('<strong>这是 <i>HTML</i> 片段</strong>', '添加商品', {
+                dangerouslyUseHTMLString: true
             })
         }
     }
-
 }
 </script>
 
