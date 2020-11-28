@@ -10,7 +10,7 @@
 
         </el-col>
     </el-row>
-    <el-table :data="tableData" border style="width: 100%" class="gtable" @row-click="getRowid">
+    <el-table :data="tableData" border style="width: 100%" class="gtable">
         <el-table-column type="index" :index='indexMethod' label="#" width="60">
         </el-table-column>
         <el-table-column prop="gid" label="商品编号" width="100">
@@ -22,9 +22,9 @@
         <el-table-column prop="gprice" label="商品价格/元" width="150">
         </el-table-column>
         <el-table-column label="操作">
-            <template slot-scope="">
-                <el-button type="primary" icon="el-icon-edit" circle plain></el-button>
-                <el-button type="danger" icon="el-icon-delete" circle plain @click="showDelGoodsDialog"></el-button>
+            <template slot-scope="scope">
+                <el-button type="primary" icon="el-icon-edit" circle plain @click="showEditGoodsDialog(scope.row)"></el-button>
+                <el-button type="danger" icon="el-icon-delete" circle plain @click="showDelGoodsDialog(scope.row)"></el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -34,19 +34,38 @@
     <!-- 添加商品对话框 -->
     <el-dialog title="添加商品" :visible.sync="dialogFormVisibleAdd">
         <el-form :model="form">
-            <el-form-item label="商品名称" label-width="100px">
+            <el-form-item label="商品名称" label-width="140px">
                 <el-input v-model="form.gname" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="商品规格" label-width="100px">
+            <el-form-item label="商品规格" label-width="140px">
                 <el-input v-model="form.gspec" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="商品价格/元" label-width="100px">
+            <el-form-item label="商品价格/元" label-width="140px">
                 <el-input v-model="form.gprice" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer">
             <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
             <el-button type="primary" @click="addGoods">确 定</el-button>
+        </div>
+    </el-dialog>
+
+        <!-- 修改商品对话框 -->
+    <el-dialog title="修改商品" :visible.sync="dialogFormVisibleEdit">
+        <el-form :model="tempform">
+            <el-form-item label="商品名称" label-width="140px">
+                <el-input v-model="tempform.gname" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="商品规格" label-width="140px">
+                <el-input v-model="tempform.gspec" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="商品价格/元" label-width="140px">
+                <el-input v-model="tempform.gprice" autocomplete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer">
+            <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+            <el-button type="primary" @click="editGoods">确 定</el-button>
         </div>
     </el-dialog>
 </el-card>
@@ -64,12 +83,18 @@ export default {
             allData: [], //全部数据
             totalPage: 0, //总页码
             dialogFormVisibleAdd: false,
+            dialogFormVisibleEdit: false,
             form: {
                 gname: '',
                 gspec: '',
                 gprice: ''
             },
-            indexgid: 0
+            tempform: {
+                gname: '',
+                gspec: '',
+                gprice: '',
+                gid: ''
+            }
         }
     },
     created() {
@@ -77,12 +102,6 @@ export default {
         this.getPageTotal()
     },
     methods: {
-        // 获取当前行数据的gid
-        getRowid(val){
-            let rowdata = this
-            rowdata = val
-            this.indexgid = val.gid
-        },
         //获取前6条数据
         async getData(index) {
             this.pageNo = index || this.pageNo
@@ -157,27 +176,58 @@ export default {
             }
         },
         // 删除商品
-        // 显示对话框
-        showDelGoodsDialog() {
+        showDelGoodsDialog(val) {
+            let indexgid = val.gid
             this.$confirm('确认删除商品？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
-            }).then( async () => {
-                const res = await this.$http.post('delGoods',{gid:this.indexgid})
-                this.getData()
-                this.getPageTotal()
-                this.currentPage()
-                this.$message({
-                    type: 'success',
-                    message: '删除成功!'
+            }).then(async () => {
+                const res = await this.$http.post('delGoods', {
+                    gid: indexgid
                 })
+                console.log(res)
+                if (res.status == 200) {
+                    this.getData()
+                    this.getPageTotal()
+                    this.currentPage()
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: '删除失败!'
+                    })
+                }
+
             }).catch(() => {
                 this.$message({
                     type: 'info',
                     message: '已取消删除'
                 })
             })
+        },
+        // 修改商品
+        showEditGoodsDialog(val) {
+            this.dialogFormVisibleEdit = true
+            // console.log(val)
+            this.tempform = val
+        },
+        async editGoods(){
+            const res = await this.$http.post('updateGoods', this.tempform)
+            const status = res.status
+            if (status == 200) {
+                this.$message.success("修改成功")
+                this.dialogFormVisibleEdit = false
+                this.getSearchData()
+                this.getSearchPageTotal()
+                this.currentPage()
+                this.tempform = {}
+            } else {
+                this.$message.warning("修改失败")
+            }
         }
     }
 }
