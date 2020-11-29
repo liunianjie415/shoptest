@@ -186,7 +186,6 @@ export default {
                 const res = await this.$http.post('delGoods', {
                     gid: indexgid
                 })
-                console.log(res)
                 if (res.status == 200) {
                     this.getData()
                     this.getPageTotal()
