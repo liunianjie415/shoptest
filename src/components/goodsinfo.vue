@@ -7,7 +7,6 @@
             </el-input>
             <!-- 添加商品 -->
             <el-button type="success" class="addbtn" @click="showGoodsdialog">添加商品</el-button>
-
         </el-col>
     </el-row>
     <el-table :data="tableData" border style="width: 100%" class="gtable">

@@ -28,8 +28,6 @@
     </el-table>
      <el-pagination
      class="gpage"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
       :current-page="1"
       :page-sizes="[5, 10, 15, 20]"
       :page-size="2"
