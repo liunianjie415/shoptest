@@ -183,7 +183,6 @@ export default {
         if (res.status == 200) {
           this.getData()
           this.getgname()
-          this.currentPage = 1
           this.$message({
             type: 'success',
             message: '删除成功!'

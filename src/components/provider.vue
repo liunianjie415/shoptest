@@ -222,7 +222,6 @@ export default {
             // 改变默认的页数
             this.currentPage = val
         }
-
     }
 }
 </script>
