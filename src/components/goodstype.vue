@@ -242,7 +242,6 @@ export default {
             // 改变默认的页数
             this.currentPage = val
         },
-
         // 搜索
         querySearch(queryString, cb) {
             var selecttype = this.selecttype;
