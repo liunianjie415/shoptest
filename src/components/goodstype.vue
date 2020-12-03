@@ -33,7 +33,7 @@
     </el-pagination>
 
     <!-- 添加数据对话框 -->
-    <el-dialog title="添加数据" :visible.sync="dialogFormVisibleAdd" width="30%" :before-close="handleClose">
+    <el-dialog title="添加数据" :visible.sync="dialogFormVisibleAdd" width="24%" :before-close="handleClose">
         <el-form :model="form">
             <el-form-item label="类别名称">
                 <el-autocomplete clearable :fetch-suggestions="querySearch" v-model="form.gtname">
@@ -60,7 +60,7 @@
     </el-dialog>
 
     <!-- 修改数据对话框 -->
-    <el-dialog title="修改数据" :visible.sync="dialogFormVisibleEdit" width="30%" :before-close="cancelEdit">
+    <el-dialog title="修改数据" :visible.sync="dialogFormVisibleEdit" width="24%" :before-close="cancelEdit">
         <el-form :model="temp">
             <el-form-item label="类别名称">
                 <el-autocomplete clearable :fetch-suggestions="querySearch" v-model="temp.gtname">
@@ -152,7 +152,6 @@ export default {
                 this.getData()
                 this.getnotype()
                 this.temp = {}
-                this.currentPage = 1
             } else {
                 this.$message.warning("修改失败")
             }

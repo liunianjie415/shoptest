@@ -30,7 +30,7 @@
     </el-pagination>
 
     <!-- 添加供应商对话框 -->
-    <el-dialog title="添加供应商" :visible.sync="dialogFormVisibleAdd" :before-close="handleClose">
+    <el-dialog title="添加供应商" :visible.sync="dialogFormVisibleAdd" :before-close="handleClose" width="35%">
         <el-form :model="form">
             <el-form-item label="供应商名称" label-width="140px">
                 <el-input v-model="form.pname" autocomplete="off"></el-input>
@@ -49,7 +49,7 @@
     </el-dialog>
 
     <!-- 修改供应商 -->
-    <el-dialog title="修改供应商" :visible.sync="dialogFormVisibleEdit" :before-close="handleEditClose">
+    <el-dialog title="修改供应商" :visible.sync="dialogFormVisibleEdit" :before-close="handleEditClose" width="35%">
         <el-form :model="tempform">
             <el-form-item label="供应商名称" label-width="140px">
                 <el-input v-model="tempform.pname" autocomplete="off"></el-input>

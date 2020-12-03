@@ -29,19 +29,19 @@
   <el-pagination class="gpage" :current-page="currentPage" :page-size="pageSize" layout="total, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange">
   </el-pagination>
   <!-- 添加数据对话框 -->
-  <el-dialog title="添加数据" :visible.sync="dialogFormVisibleAdd" width="35%" :before-close="canceladd">
+  <el-dialog title="添加数据" :visible.sync="dialogFormVisibleAdd" width="25%" :before-close="canceladd">
     <el-form :model="form">
-      <el-form-item label="商品名称">
+      <el-form-item label="商品名称" label-width="120px">
         <el-autocomplete clearable :fetch-suggestions="querySearchgname" v-model="form.ugname">
           <template slot-scope="{ item }">
             <div>{{ item.value }}</div>
           </template>
         </el-autocomplete>
       </el-form-item>
-      <el-form-item label="库存数量">
+      <el-form-item label="库存数量" label-width="120px">
         <el-input-number v-model="form.scount" :min="0" class="addinput"></el-input-number>
       </el-form-item>
-      <el-form-item label="供应商名称">
+      <el-form-item label="供应商名称" label-width="120px">
         <el-autocomplete clearable :fetch-suggestions="querySearchpname" v-model="form.pname" @select="handleSelect">
           <template slot-scope="{ item }">
             <div>{{ item.pname }}</div>
@@ -56,19 +56,19 @@
   </el-dialog>
 
   <!-- 修改数据对话框 -->
-  <el-dialog title="修改库存信息" :visible.sync="dialogFormVisibleEdit" width="35%" :before-close="canceledit">
+  <el-dialog title="修改库存信息" :visible.sync="dialogFormVisibleEdit" width="25%" :before-close="canceledit">
     <el-form :model="tempform">
-      <el-form-item label="商品名称">
+      <el-form-item label="商品名称" label-width="120px">
         <el-autocomplete clearable :fetch-suggestions="querySearchgname" v-model="tempform.ugname">
           <template slot-scope="{ item }">
             <div>{{ item.value }}</div>
           </template>
         </el-autocomplete>
       </el-form-item>
-      <el-form-item label="库存数量">
+      <el-form-item label="库存数量" label-width="120px">
         <el-input-number v-model="tempform.scount" :min="0" class="addinput"></el-input-number>
       </el-form-item>
-      <el-form-item label="供应商名称">
+      <el-form-item label="供应商名称" label-width="120px">
         <el-autocomplete clearable :fetch-suggestions="querySearchpname" v-model="tempform.pname" @select="handleSelectEdit">
           <template slot-scope="{ item }">
             <div>{{ item.pname }}</div>

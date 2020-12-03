@@ -32,27 +32,27 @@
     </el-pagination>
 
     <!-- 添加员工对话框 -->
-    <el-dialog title="添加员工" :visible.sync="dialogFormVisibleAdd" width="30%" :before-close="cancelAdd">
+    <el-dialog title="添加员工" :visible.sync="dialogFormVisibleAdd" width="26%" :before-close="cancelAdd">
         <el-form :model="form">
-            <el-form-item label="员工名称" label-width="75px">
+            <el-form-item label="员工名称" label-width="95px">
                 <el-input v-model="form.ename" autocomplete="off" class="equalauthorise"></el-input>
             </el-form-item>
-            <el-form-item label="入职时间" label-width="75px">
+            <el-form-item label="入职时间" label-width="95px">
                 <el-date-picker v-model="form.eintime" type="date" placeholder="选择日期">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="离职时间" label-width="75px">
+            <el-form-item label="离职时间" label-width="95px">
                 <el-date-picker v-model="form.eouttime" type="date" placeholder="选择日期">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="员工权限" label-width="75px">
+            <el-form-item label="员工权限" label-width="95px">
                 <el-autocomplete clearable :fetch-suggestions="querySearch" v-model="form.eauth">
                     <template slot-scope="{ item }">
                         <div>{{ item.value }}</div>
                     </template>
                 </el-autocomplete>
             </el-form-item>
-            <el-form-item label="登录密码" label-width="75px">
+            <el-form-item label="登录密码" label-width="95px">
                 <el-input v-model="form.epassword" autocomplete="off" class="equalauthorise" clearable></el-input>
             </el-form-item>
         </el-form>
@@ -63,27 +63,27 @@
     </el-dialog>
 
      <!-- 修改对话框 -->
-    <el-dialog title="修改信息" :visible.sync="dialogFormVisibleEdit" width="30%" :before-close="cancelEdit">
+    <el-dialog title="修改信息" :visible.sync="dialogFormVisibleEdit" width="26%" :before-close="cancelEdit">
         <el-form :model="tempform">
-            <el-form-item label="员工名称" label-width="75px">
+            <el-form-item label="员工名称" label-width="95px">
                 <el-input v-model="tempform.ename" autocomplete="off" class="equalauthorise" disabled></el-input>
             </el-form-item>
-            <el-form-item label="入职时间" label-width="75px">
+            <el-form-item label="入职时间" label-width="95px">
                 <el-date-picker v-model="tempform.eintime" type="date" placeholder="选择日期" disabled>
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="离职时间" label-width="75px">
+            <el-form-item label="离职时间" label-width="95px">
                 <el-date-picker v-model="tempform.eouttime" type="date" placeholder="选择日期" >
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="员工权限" label-width="75px">
+            <el-form-item label="员工权限" label-width="95px">
                 <el-autocomplete clearable :fetch-suggestions="querySearch" v-model="tempform.eauth" >
                     <template slot-scope="{ item }">
                         <div>{{ item.value }}</div>
                     </template>
                 </el-autocomplete>
             </el-form-item>
-            <el-form-item label="登录密码" label-width="75px">
+            <el-form-item label="登录密码" label-width="95px">
                 <el-input v-model="tempform.epassword" autocomplete="off" class="equalauthorise" clearable></el-input>
             </el-form-item>
         </el-form>

@@ -3,10 +3,10 @@
     <span class="title">超市后台管理系统</span>
     <el-form class="login-form" label-position="top" label-width="80px" :model="formdata">
         <el-form-item label="账号">
-            <el-input v-model="formdata.username"></el-input>
+            <el-input v-model="formdata.username" clearable></el-input>
         </el-form-item>
         <el-form-item label="密码">
-            <el-input v-model="formdata.password" @keyup.enter.native="handleLogin()"></el-input>
+            <el-input v-model="formdata.password" @keyup.enter.native="handleLogin()" clearable></el-input>
         </el-form-item>
         <el-button type="primary" class="login-btn" @click.prevent="handleLogin()">登 录</el-button>
     </el-form>
@@ -15,37 +15,51 @@
 
 <script>
 export default {
-  data() {
-      return {
-          formdata: {
-            username: '',
-            password: ''
-          }
-      }
-  },
-  methods: {
-    async handleLogin() {
-      const res = await this.$http.get('showEmp')
-      const data = res.data
-      // console.log(data);
-      for (let i = 0; i < data.length; i++) {
-        if (this.formdata.username !== data[i].ename) {
-          this.$message.error('账号不存在');
-        } else if (this.formdata.username === data[i].ename && this.formdata.password !== data[i].epassword) {
-          this.$message.error('密码错误');
-        } else {
-          localStorage.setItem('user', data[i].ename)   
-          this.$message({
-            message: '恭喜你，登陆成功',
-            type: 'success'
-          })
-          this.$router.push({
-            name: 'home'
-          })
+    data() {
+        return {
+            formdata: {
+                username: '',
+                password: ''
+            }
         }
-      }
+    },
+    methods: {
+        async handleLogin() {
+            const res = await this.$http.get('showEmp')
+            const data = res.data
+            const resultuser = data.some((value, index, data) => {
+                return value.ename == this.formdata.username
+            })
+            const resultpwd = data.some((value, index, data) => {
+                return value.ename == this.formdata.username && value.epassword == this.formdata.password
+            })
+            if (this.formdata.username == '') {
+                this.$message.error('账号不能为空！')
+            } else {
+                if (!resultuser) {
+                    this.$message.error('账号不存在！')
+                } else {
+                    if (this.formdata.password == '') {
+                        this.$message.error('密码不能为空！')
+                    } else {
+                        if (!resultpwd) {
+                            this.$message.error('密码不正确')
+                        } else {
+                            localStorage.setItem('user', this.formdata.username)
+                            this.$message({
+                                message: '恭喜你，登陆成功',
+                                type: 'success'
+                            })
+                            this.$router.push({
+                                name: 'home'
+                            })
+                        }
+                    }
+                }
+            }
+
+        }
     }
-  }
 }
 </script>
 

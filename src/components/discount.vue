@@ -40,29 +40,29 @@
     <!-- 添加折扣对话框 -->
     <el-dialog title="添加折扣信息" :visible.sync="dialogFormVisibleAdd" width="30%" :before-close="cancelAdd">
         <el-form :model="form">
-            <el-form-item label="折扣名称" label-width="75px">
-                <el-input v-model="form.dname" autocomplete="off" class="inputadj" clearable></el-input>
+            <el-form-item label="折扣名称" label-width="95px">
+                <el-input v-model="form.dname" autocomplete="off" clearable></el-input>
             </el-form-item>
-            <el-form-item label="商品名称" label-width="75px">
-                <el-autocomplete clearable :fetch-suggestions="querySearch" v-model="form.ugname">
+            <el-form-item label="商品名称" label-width="95px">
+                <el-autocomplete clearable :fetch-suggestions="querySearch" v-model="form.ugname" class="inputadj">
                     <template slot-scope="{ item }">
                         <div>{{ item.gname }}</div>
                     </template>
                 </el-autocomplete>
             </el-form-item>
-            <el-form-item label="折扣描述" label-width="75px">
-                <el-input v-model="form.ddesc" autocomplete="off" class="inputadj" clearable></el-input>
+            <el-form-item label="折扣描述" label-width="95px">
+                <el-input v-model="form.ddesc" autocomplete="off" clearable></el-input>
             </el-form-item>
-            <el-form-item label="开始时间" label-width="75px">
+            <el-form-item label="开始时间" label-width="95px">
                 <el-date-picker v-model="form.dbdate" type="datetime" placeholder="选择日期" clearable>
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="结束时间" label-width="75px">
+            <el-form-item label="结束时间" label-width="95px">
                 <el-date-picker v-model="form.dedate" type="datetime" placeholder="选择日期" clearable>
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="折扣数据" label-width="75px">
-                <el-input v-model="form.dnum" autocomplete="off" class="inputadj" clearable></el-input>
+            <el-form-item label="折扣数据" label-width="95px">
+                <el-input v-model="form.dnum" autocomplete="off" clearable></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer">
@@ -74,25 +74,25 @@
     <!-- 修改对话框 -->
     <el-dialog title="修改折扣信息" :visible.sync="dialogFormVisibleEdit" width="30%" :before-close="cancelEdit">
         <el-form :model="tempform">
-            <el-form-item label="折扣名称" label-width="75px">
-                <el-input v-model="tempform.dname" autocomplete="off" class="inputadj" clearable></el-input>
+            <el-form-item label="折扣名称" label-width="95px">
+                <el-input v-model="tempform.dname" autocomplete="off" clearable></el-input>
             </el-form-item>
-            <el-form-item label="商品名称" label-width="75px" >
-                <el-input v-model="tempform.ugname" autocomplete="off" class="inputadj" disabled></el-input>
+            <el-form-item label="商品名称" label-width="95px" >
+                <el-input v-model="tempform.ugname" autocomplete="off" disabled></el-input>
             </el-form-item>
-            <el-form-item label="折扣描述" label-width="75px">
-                <el-input v-model="tempform.ddesc" autocomplete="off" class="inputadj" clearable></el-input>
+            <el-form-item label="折扣描述" label-width="95px">
+                <el-input v-model="tempform.ddesc" autocomplete="off" clearable></el-input>
             </el-form-item>
-            <el-form-item label="开始时间" label-width="75px" >
-                <el-date-picker v-model="tempform.dbdate" type="datetime" placeholder="选择日期" disabled>
+            <el-form-item label="开始时间" label-width="95px" >
+                <el-date-picker v-model="tempform.dbdate" type="datetime" placeholder="选择日期" disabled class="inputadj">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="结束时间" label-width="75px">
-                <el-date-picker v-model="tempform.dedate" type="datetime" placeholder="选择日期" clearable>
+            <el-form-item label="结束时间" label-width="95px">
+                <el-date-picker v-model="tempform.dedate" type="datetime" placeholder="选择日期" clearable class="inputadj">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="折扣数据" label-width="75px">
-                <el-input v-model="tempform.dnum" autocomplete="off" class="inputadj" clearable></el-input>
+            <el-form-item label="折扣数据" label-width="95px">
+                <el-input v-model="tempform.dnum" autocomplete="off" clearable></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer">
@@ -285,6 +285,6 @@ export default {
 }
 
 .inputadj {
-    width: 220px;
+    width: 326px;
 }
 </style>
