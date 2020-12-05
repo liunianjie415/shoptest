@@ -152,6 +152,7 @@ export default {
                 this.getData()
                 this.getnotype()
                 this.temp = {}
+                this.currentPage = 1
             } else {
                 this.$message.warning("修改失败")
             }

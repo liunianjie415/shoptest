@@ -17,9 +17,9 @@
         </el-table-column>
         <el-table-column prop="dname" label="折扣名称" width="160">
         </el-table-column>
-        <el-table-column prop="sebprice" label="消费金额" width="90">
+        <el-table-column prop="sebprice" label="消费金额/元" width="100">
         </el-table-column>
-        <el-table-column prop="seeprice" label="折后金额" width="90">
+        <el-table-column prop="seeprice" label="折后金额/元" width="100">
         </el-table-column>
         <el-table-column label="操作">
             <template slot-scope="scope">
@@ -28,9 +28,12 @@
             </template>
         </el-table-column>
     </el-table>
-    <el-pagination background :current-page="currentPage" :page-size="pageSize" layout="total,prev, pager, next" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+    <el-pagination background :current-page="currentPage" :page-size="pageSize" layout="total,prev, pager, next" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" style="width:700px;display:inline-block">
     </el-pagination>
-
+    <div style="display:inline-block;">
+        <span>未折扣金额为：<em style="color:red;font-size:25px;font-weight:bolder;display:inline-block;margin-right:5px">{{ this.nbilltotal }}￥</em></span>
+        <span>折后金额为：<em style="color:red;font-size:25px;font-weight:bolder">{{ this.billtotal }}￥</em></span>
+    </div>
     <!-- 添加商品对话框 -->
     <el-dialog title="添加商品" :visible.sync="dialogFormVisibleAdd" width="25%" :before-close="cancelAdd">
         <el-form :model="form">
@@ -155,6 +158,10 @@ export default {
             handleindex: "",
             // 库存信息
             storeArr: [],
+            // 折前总消费
+            nbilltotal: 0,
+            // 折后总消费
+            billtotal: 0
         };
     },
     created() {
@@ -167,6 +174,7 @@ export default {
         async commitbills() {
             // sedate,uname,secount,sebprice,udid,seeprice
             let commitdata = [];
+            let str = this.randomString(2, 6)
             for (let i = 0; i < this.tableData.length; i++) {
                 commitdata.push({
                     sedate: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -175,11 +183,11 @@ export default {
                     sebprice: this.tableData[i].sebprice,
                     udid: parseInt(this.tableData[i].udid),
                     seeprice: this.tableData[i].seeprice,
+                    senum: str
                 });
             }
             const res = await this.$http.post('addSell', commitdata)
             const status = res.status
-
             // 提交到sell表后，处理store的数量
             // scount,ugname
             let handlestore = [];
@@ -196,11 +204,13 @@ export default {
             }
             const res1 = await this.$http.post('handlecount', handlestore)
             const status1 = res1.status
-            if(status == 200 && status1 == 200) {
-                this.$message.success("账单提交成功")
+            if (status == 200 && status1 == 200) {
+                this.$message.success("账单提交成功,本次消费为：" + this.billtotal + "￥")
                 this.tableData = []
                 this.total = 0
-            }else {
+                this.billtotal = 0
+                this.nbilltotal = 0
+            } else {
                 this.$message.warning("账单提交失败")
             }
         },
@@ -281,15 +291,15 @@ export default {
                     parseFloat(this.tempform.sebprice) * parseFloat(this.tempform.dnum)
                 )
                 .toFixed(2)
-                .toString();
-            this.tempform.seeprice = isNaN(seeprice) ? "" : seeprice;
+                .toString()
+            this.tempform.seeprice = isNaN(seeprice) ? "" : seeprice
             if (this.tempform.dnum == "") {
-                this.tempform.seeprice = this.tempform.sebprice;
+                this.tempform.seeprice = this.tempform.sebprice
             }
-            this.judgecount(this.storeArr, this.tempform);
+            this.judgecount(this.storeArr, this.tempform)
         },
         cancelEdit() {
-            this.dialogFormVisibleEdit = false;
+            this.dialogFormVisibleEdit = false
             this.tempform = {
                 sedate: "",
                 uname: "",
@@ -300,12 +310,12 @@ export default {
                 dnum: "",
                 gprice: "",
                 gspec: "",
-                dname: "",
-            };
+                dname: ""
+            }
         },
         confirmEdit() {
-            this.dialogFormVisibleEdit = false;
-            this.tableData.splice(this.handleindex, 1, this.tempform);
+            this.dialogFormVisibleEdit = false
+            this.tableData.splice(this.handleindex, 1, this.tempform)
             this.tempform = {
                 sedate: "",
                 uname: "",
@@ -316,9 +326,11 @@ export default {
                 dnum: "",
                 gprice: "",
                 gspec: "",
-                dname: "",
+                dname: ""
             };
-            this.$message.success("修改成功");
+            this.$message.success("修改成功")
+            this.billtotal = this.getbilltotal()
+            this.nbilltotal = this.getnbilltotal()
         },
         // 添加商品
         showAddDialog() {
@@ -335,7 +347,7 @@ export default {
             let length = this.unametodid.length;
             this.selectudid = [];
             for (let i = 0; i < length; i++) {
-                if (this.unametodid[i].ugname == val.value) {
+                if (this.unametodid[i].ugname == val.value && (this.unametodid[i].dstate === "false" ? false : true)) {
                     this.selectudid.push(this.unametodid[i]);
                 }
             }
@@ -398,10 +410,10 @@ export default {
             };
         },
         confirmAdd() {
-            this.tableData.push(this.form);
-            this.total = this.tableData.length;
-            this.$message.success("添加成功");
-            this.dialogFormVisibleAdd = false;
+            this.tableData.push(this.form)
+            this.total = this.tableData.length
+            this.$message.success("添加成功")
+            this.dialogFormVisibleAdd = false
             this.form = {
                 sedate: "",
                 uname: "",
@@ -413,7 +425,9 @@ export default {
                 gprice: "",
                 gspec: "",
                 dname: "",
-            };
+            }
+            this.billtotal = this.getbilltotal()
+            this.nbilltotal = this.getnbilltotal()
         },
         //获取序号
         indexMethod(index) {
@@ -473,6 +487,38 @@ export default {
             // 调用 callback 返回建议列表的数据
             cb(results);
         },
+        // 得到随机字符串，由指定个数的大写字母+指定个数的数字组成
+        randomString(e, d) {
+            let str = "QWERTYUIOPASDFGHJKLZXCVBNM",
+                len = str.length,
+                num = "1234567890",
+                n = ""
+            for (let i = 0; i < e; i++) {
+                n += str.charAt(Math.floor(Math.random() * len));
+            }
+            for (let j = 0; j < d; j++) {
+                n += num.charAt(Math.floor(Math.random() * 10))
+            }
+            return n
+        },
+        // 计算折前总消费
+        getnbilltotal() {
+            let total = 0
+            let len = this.tableData.length
+            for (let i = 0; i < len; i++) {
+                total += parseFloat(this.tableData[i].sebprice)
+            }
+            return total.toFixed(2)
+        },
+        // 计算折后总消费
+        getbilltotal() {
+            let total = 0
+            let len = this.tableData.length
+            for (let i = 0; i < len; i++) {
+                total += parseFloat(this.tableData[i].seeprice)
+            }
+            return total.toFixed(2)
+        }
     },
 };
 </script>
@@ -503,4 +549,5 @@ export default {
     border-radius: 28px;
     box-shadow: 3px 3px 6px black;
 }
+
 </style>

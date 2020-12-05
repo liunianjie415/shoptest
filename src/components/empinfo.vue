@@ -168,6 +168,7 @@ export default {
                 this.dialogFormVisibleEdit = false
                 this.getData()
                 this.tempform = {}
+                this.currentPage = 1
             } else {
                 this.$message.warning("修改失败")
             }

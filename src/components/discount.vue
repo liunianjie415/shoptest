@@ -25,7 +25,7 @@
         </el-table-column>
         <el-table-column label="状态" width="80">
             <template slot-scope="scope">
-                <el-switch disabled v-model="scope.row.state"></el-switch>
+                <el-switch disabled v-model="scope.row.dstate"></el-switch>
             </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -62,7 +62,7 @@
                 </el-date-picker>
             </el-form-item>
             <el-form-item label="折扣数据" label-width="95px">
-                <el-input v-model="form.dnum" autocomplete="off" clearable></el-input>
+                <el-input v-model="form.dnum" autocomplete="off" clearable placeholder="请输入小数"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer">
@@ -77,13 +77,13 @@
             <el-form-item label="折扣名称" label-width="95px">
                 <el-input v-model="tempform.dname" autocomplete="off" clearable></el-input>
             </el-form-item>
-            <el-form-item label="商品名称" label-width="95px" >
+            <el-form-item label="商品名称" label-width="95px">
                 <el-input v-model="tempform.ugname" autocomplete="off" disabled></el-input>
             </el-form-item>
             <el-form-item label="折扣描述" label-width="95px">
                 <el-input v-model="tempform.ddesc" autocomplete="off" clearable></el-input>
             </el-form-item>
-            <el-form-item label="开始时间" label-width="95px" >
+            <el-form-item label="开始时间" label-width="95px">
                 <el-date-picker v-model="tempform.dbdate" type="datetime" placeholder="选择日期" disabled class="inputadj">
                 </el-date-picker>
             </el-form-item>
@@ -123,7 +123,8 @@ export default {
                 ddesc: '',
                 dbdate: '',
                 dedate: '',
-                dnum: ''
+                dnum: '',
+                dstate: ''
             },
             tempform: {
                 dname: '',
@@ -132,7 +133,8 @@ export default {
                 dbdate: '',
                 dedate: '',
                 dnum: '',
-                did: ''
+                did: '',
+                dstate: ''
             }
         }
     },
@@ -151,6 +153,7 @@ export default {
                 dbdate: val.dbdate,
                 dedate: val.dedate,
                 dnum: val.dnum,
+                dstate: val.dstate,
                 did: val.did
             }
         },
@@ -159,11 +162,14 @@ export default {
             this.tempform = {}
         },
         async confirmEdit() {
+            this.tempform.dedate = moment(this.tempform.dedate).format('YYYY-MM-DD HH:mm:ss')
+            this.tempform.dstate = moment().isBefore(this.tempform.dedate)
             const res = await this.$http.post('updateDiscount', {
                 dname: this.tempform.dname,
-                ddesc:this.tempform.ddesc,
-                dedate:moment(this.tempform.dedate).format('YYYY-MM-DD HH:mm:ss'),
-                dnum:this.tempform.dnum,
+                ddesc: this.tempform.ddesc,
+                dedate: this.tempform.dedate,
+                dnum: this.tempform.dnum,
+                dstate: this.tempform.dstate.toString(),
                 did: this.tempform.did
             })
             const status = res.status
@@ -172,6 +178,7 @@ export default {
                 this.dialogFormVisibleEdit = false
                 this.getData()
                 this.tempform = {}
+                this.currentPage = 1
             } else {
                 this.$message.warning("修改失败")
             }
@@ -187,6 +194,7 @@ export default {
         async confirmAdd() {
             this.form.dbdate = moment(this.form.dbdate).format('YYYY-MM-DD HH:mm:ss')
             this.form.dedate = moment(this.form.dedate).format('YYYY-MM-DD HH:mm:ss')
+            this.form.dstate = moment().isBefore(this.form.dedate).toString()
             const res = await this.$http.post('addDiscount', this.form)
             const status = res.status
             if (status == 200) {
@@ -208,11 +216,9 @@ export default {
             for (let i = 0; i < data.length; i++) {
                 data[i].dbdate = moment(data[i].dbdate).format('YYYY-MM-DD HH:mm:ss')
                 data[i].dedate = moment(data[i].dedate).format('YYYY-MM-DD HH:mm:ss')
+                data[i].dstate = data[i].dstate === "false" ? false : true
             }
             this.tableData = data
-            for (let i = 0; i < this.tableData.length; i++) {
-                this.tableData[i].state = moment().isBefore(this.tableData[i].dedate)
-            }
             this.total = this.tableData.length
             this.currentPage = 1
         },
@@ -223,12 +229,10 @@ export default {
             for (let i = 0; i < data.length; i++) {
                 data[i].dbdate = moment(data[i].dbdate).format('YYYY-MM-DD HH:mm:ss')
                 data[i].dedate = moment(data[i].dedate).format('YYYY-MM-DD HH:mm:ss')
+                data[i].dstate = data[i].dstate === "false" ? false : true
             }
             this.tableData = data
             this.total = this.tableData.length
-            for (let i = 0; i < this.tableData.length; i++) {
-                this.tableData[i].state = moment().isBefore(this.tableData[i].dedate)
-            }
         },
         //获取序号
         indexMethod(index) {
