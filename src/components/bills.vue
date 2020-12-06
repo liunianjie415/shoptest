@@ -205,7 +205,7 @@ export default {
             const res1 = await this.$http.post('handlecount', handlestore)
             const status1 = res1.status
             if (status == 200 && status1 == 200) {
-                this.$message.success("账单提交成功,本次消费为：" + this.billtotal + "￥")
+                this.$message.success("账单提交成功,账单编号为："+ str +"，本次消费为：" + this.billtotal + "￥")
                 this.tableData = []
                 this.total = 0
                 this.billtotal = 0
