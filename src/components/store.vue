@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
     data() {
         return {
@@ -107,7 +108,9 @@ export default {
                 upid: '',
                 pname: ''
             },
-            editsid: ''
+            editsid: '',
+            // 本次更新之前的库存信息
+            nochangestore: []
         }
     },
     created() {
@@ -147,6 +150,10 @@ export default {
                 upid: this.tempform.upid,
                 sid: this.editsid
             })
+
+            let obj = this.changecount(this.nochangestore, this.tempform)
+            this.insertMessage(obj)
+
             const status = res.status
             if (status == 200) {
                 this.$message.success("修改成功")
@@ -176,6 +183,15 @@ export default {
                 const res = await this.$http.post('delStore', {
                     sid: delsid
                 })
+
+                let obj = {
+                    gname: val.ugname,
+                    reduce: val.scount,
+                    add: 0,
+                    desc: '删除了' + val.ugname
+                }
+                this.insertMessage(obj)
+
                 if (res.status == 200) {
                     this.getData()
                     this.getgname()
@@ -207,6 +223,11 @@ export default {
                 scount: this.form.scount,
                 upid: this.form.upid
             })
+
+            let obj = this.changecount(this.nochangestore, this.form)
+            obj.desc = '添加了' + this.form.ugname
+            this.insertMessage(obj)
+
             const status = res.status
             if (status == 200) {
                 this.$message.success("添加成功")
@@ -286,11 +307,12 @@ export default {
             this.total = this.tableData.length
             this.currentPage = 1
         },
-        // 获取数据,渲染
+        // 获取所有库存数据
         async getData() {
             const res = await this.$http.get('showStore')
             this.tableData = res.data
             this.total = this.tableData.length
+            this.nochangestore = res.data
         },
         //获取序号
         indexMethod(index) {
@@ -307,6 +329,60 @@ export default {
         handleCurrentChange(val) {
             // 改变默认的页数
             this.currentPage = val
+        },
+        // 处理是增加库存还是减少库存时具体数目的函数
+        changecount(storeArr, changeObj) {
+            let len = storeArr.length
+            var reduce = 0,
+                add = 0,
+                gname = '',
+                str = ''
+            for (let i = 0; i < len; i++) {
+                if (storeArr[i].ugname == changeObj.ugname) {
+                    gname = storeArr[i].ugname
+                    if (storeArr[i].scount > changeObj.scount) {
+                        reduce = storeArr[i].scount - changeObj.scount
+                        add = 0
+                        str = '库存减少了' + reduce
+                    } else {
+                        add = changeObj.scount - storeArr[i].scount
+                        reduce = 0
+                        str = '库存增加了' + add
+                    }
+                }
+            }
+            return {
+                gname: gname,
+                reduce: reduce,
+                add: add,
+                desc: str
+            }
+        },
+        // 添加信息到库存信息表中
+        async insertMessage(obj) {
+            let commitArr = []
+            if (!Array.isArray(obj)) {
+                let handleObj = {
+                    sname: obj.gname,
+                    scountreduce: obj.reduce,
+                    scountadd: obj.add,
+                    sdate: moment().format("YYYY-MM-DD HH:mm:ss"),
+                    sdesc: obj.desc
+                }
+                commitArr.push(handleObj)
+            } else {
+                let len = obj.length
+                for (let i = 0; i < len; i++) {
+                    commitArr.push({
+                        sname: obj[i].gname,
+                        scountreduce: obj[i].reduce,
+                        scountadd: obj[i].add,
+                        sdate: moment().format("YYYY-MM-DD HH:mm:ss"),
+                        sdesc: obj[i].desc
+                    })
+                }
+            }
+            const res = await this.$http.post('addStoreMsg', commitArr)
         }
     },
 }

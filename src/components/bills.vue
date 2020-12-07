@@ -161,7 +161,7 @@ export default {
             // 折前总消费
             nbilltotal: 0,
             // 折后总消费
-            billtotal: 0
+            billtotal: 0,
         };
     },
     created() {
@@ -202,6 +202,19 @@ export default {
                     }
                 }
             }
+
+            // 添加信息到库存信息表中
+            let obj = {}
+            let finallArr = []
+            let len = handlestore.length
+            for(let i = 0; i < len; i++) {
+                obj = this.changecount(this.storeArr, handlestore[i])
+                finallArr.push(obj)
+                obj = {}
+            }
+            this.insertMessage(finallArr)
+
+
             const res1 = await this.$http.post('handlecount', handlestore)
             const status1 = res1.status
             if (status == 200 && status1 == 200) {
@@ -216,9 +229,9 @@ export default {
         },
         // 获取库存信息 
         async getStore() {
-            const res = await this.$http.get("getcount");
+            const res = await this.$http.get("getcount")
             if (res.status == 200) {
-                this.storeArr = res.data;
+                this.storeArr = res.data
             }
         },
         // 判断库存数量的函数
@@ -518,6 +531,56 @@ export default {
                 total += parseFloat(this.tableData[i].seeprice)
             }
             return total.toFixed(2)
+        },
+        // 处理是增加库存还是减少库存时具体数目的函数
+        changecount(storeArr, changeObj) {
+            let len = storeArr.length
+            var reduce = 0,
+                add = 0,
+                gname = '',
+                str = ''
+            for (let i = 0; i < len; i++) {
+                if (storeArr[i].ugname == changeObj.ugname) {
+                    gname = storeArr[i].ugname
+                    if (storeArr[i].scount > changeObj.scount) {
+                        reduce = storeArr[i].scount - changeObj.scount
+                        add = 0
+                        str = '出售了' + reduce
+                    }
+                }
+            }
+            return {
+                gname: gname,
+                reduce: reduce,
+                add: add,
+                desc: str
+            }
+        },
+        // 添加信息到库存信息表中
+        async insertMessage(obj) {
+            let commitArr = []
+            if (!Array.isArray(obj)) {
+                let handleObj = {
+                    sname: obj.gname,
+                    scountreduce: obj.reduce,
+                    scountadd: obj.add,
+                    sdate: moment().format("YYYY-MM-DD HH:mm:ss"),
+                    sdesc: obj.desc
+                }
+                commitArr.push(handleObj)
+            } else {
+                let len = obj.length
+                for (let i = 0; i < len; i++) {
+                    commitArr.push({
+                        sname: obj[i].gname,
+                        scountreduce: obj[i].reduce,
+                        scountadd: obj[i].add,
+                        sdate: moment().format("YYYY-MM-DD HH:mm:ss"),
+                        sdesc: obj[i].desc
+                    })
+                }
+            }
+            const res = await this.$http.post('addStoreMsg', commitArr)
         }
     },
 };
