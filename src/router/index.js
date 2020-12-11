@@ -12,13 +12,13 @@ import EINFO from '@/components/empinfo.vue'
 import EAUTH from '@/components/empauthorize.vue'
 import DISC from '@/components/discount.vue'
 import BILLS from '@/components/bills.vue'
+import SOUT from '@/components/sellout.vue'
 
 
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
+  routes: [{
       name: 'login',
       path: '/',
       component: Login
@@ -32,44 +32,48 @@ export default new Router({
       path: '/home',
       redirect: '/ginfo',
       component: Home,
-      children: [
-        {
+      children: [{
           name: 'ginfo',
           path: '/ginfo',
           component: GINFO
-        },{
+        }, {
           name: 'gtype',
           path: '/gtype',
           component: GTYPE
-        },{
+        }, {
           name: 'store',
           path: '/store',
           component: STORE
-        },{
+        }, {
           name: 'provide',
           path: '/provide',
           component: PRO
-        },{
+        }, {
           name: 'sinfo',
           path: '/sinfo',
           component: SINFO
-        },{
+        }, {
+          name: 'sout',
+          path: '/sout',
+          component: SOUT
+        },
+        {
           name: 'sstat',
           path: '/sstat',
           component: SSTAT
-        },{
+        }, {
           name: 'einfo',
           path: '/einfo',
           component: EINFO
-        },{
+        }, {
           name: 'eauth',
           path: '/eauth',
           component: EAUTH
-        },{
+        }, {
           name: 'disc',
           path: '/disc',
           component: DISC
-        },{
+        }, {
           name: 'bills',
           path: '/bills',
           component: BILLS

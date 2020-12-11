@@ -48,7 +48,7 @@
                 <el-input v-model="form.gspec" autocomplete="off" disabled></el-input>
             </el-form-item>
             <el-form-item label="消费数量" label-width="95px">
-                <el-input-number v-model="form.secount" :min="1" class="adjinput" @change="changecount"></el-input-number>
+                <el-input-number v-model="form.secount" :min="1" class="adjinput" @change="countchange"></el-input-number>
             </el-form-item>
             <el-form-item label="折扣编号" label-width="95px">
                 <el-autocomplete clearable :fetch-suggestions="querySearchdid" v-model="form.udid" @select="handleudidSelect" @clear="clearudid" class="adjinput">
@@ -389,7 +389,7 @@ export default {
             this.form.dname = "";
             this.form.dnum = "";
         },
-        changecount(val) {
+        countchange(val) {
             this.form.secount = val;
             this.form.sebprice = (
                     parseFloat(this.form.gprice) * parseFloat(this.form.secount)

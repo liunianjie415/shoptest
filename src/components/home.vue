@@ -65,25 +65,36 @@
                         <span>销售管理</span>
                     </template>
                     <el-menu-item-group>
-                        <el-menu-item index="sinfo">
+                        <el-menu-item index="sout">
                             <i class="el-icon-s-grid"></i>
-                            <span>销售信息</span>
+                            <span>销量记录</span>
                         </el-menu-item>
                         <el-menu-item index="sstat">
                             <i class="el-icon-s-grid"></i>
-                            <span>统计报表</span>
+                            <span>统计图表</span>
                         </el-menu-item>
                     </el-menu-item-group>
-                </el-submenu>
-                
+                </el-submenu>              
                 <el-menu-item index="disc">
                     <i class="el-icon-discount"></i>
                     <span slot="title">优惠管理</span>
                 </el-menu-item>
-                <el-menu-item index="bills">
-                    <i class="el-icon-setting"></i>
-                    <span slot="title">消费管理</span>
-                </el-menu-item>
+                <el-submenu index="7">
+                     <template slot="title">
+                        <i class="el-icon-setting"></i>
+                        <span>消费管理</span>
+                    </template>
+                     <el-menu-item-group>
+                        <el-menu-item index="sinfo">
+                            <i class="el-icon-s-grid"></i>
+                            <span>查看账单</span>
+                        </el-menu-item>
+                        <el-menu-item index="bills">
+                            <i class="el-icon-s-grid"></i>
+                            <span>生成账单</span>
+                        </el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
             </el-menu>
         </el-aside>
         <el-main class="main">

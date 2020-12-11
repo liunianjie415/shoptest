@@ -7,9 +7,12 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/global.css'
 import MyHttpServer from '@/plugins/http.js'
+window.echarts = require('echarts')
+import moment from "moment"
 
 Vue.use(ElementUI)
 Vue.use(MyHttpServer)
+Vue.prototype.$moment = moment
 
 Vue.config.productionTip = false
 
