@@ -3,10 +3,10 @@
     <el-row style="margin-bottom:10px">
         <el-col :span="10">
             选择时间段：
-            <el-date-picker v-model="afterdate" type="date" placeholder="选择日期" style="width:150px">
+            <el-date-picker v-model="afterdate" type="date" placeholder="选择日期" style="width:150px" :disabled=flag>
             </el-date-picker>
             ~
-            <el-date-picker v-model="beforedate" type="date" placeholder="选择日期" style="width:150px">
+            <el-date-picker v-model="beforedate" type="date" placeholder="选择日期" style="width:150px" :disabled=flag>
             </el-date-picker>
         </el-col>
         <el-col :span="6">
@@ -16,12 +16,6 @@
                     <div>{{ item.value }}</div>
                 </template>
             </el-autocomplete>
-            <!-- <span>选择商品：</span>
-            <el-autocomplete clearable :fetch-suggestions="querygnameSearch" v-model="goodsname" style="width:115px">
-                <template slot-scope="{ item }">
-                    <div>{{ item.value }}</div>
-                </template>
-            </el-autocomplete> -->
         </el-col>
         <el-col :span="8">
             <el-row>
@@ -33,7 +27,7 @@
     </el-row>
     <el-row>
         <sell v-if="switchid == 1" :transselldata="transselldata"></sell>
-        <store v-if="switchid == 2"></store>
+        <store v-if="switchid == 2" :transstoredata="transstoredata"></store>
         <income v-if="switchid == 3"></income>
         <div v-if="switchid == 4">
             请选择条件
@@ -50,6 +44,10 @@ import moment from 'moment'
 export default {
     data() {
         return {
+            // 需要传递的库存数据 类别名+其数量  商品名+其数量
+            transstoredata:[],
+            // 选择库存后，让时间选择控件失效
+            flag: false,
             // 需要传递的销售数据 类别名+其数量  商品名+其数量
             transselldata: [],
             // 显示子组件的开关
@@ -72,19 +70,16 @@ export default {
                 "value": "其他类"
             }],
             goodstype: '',
-            // 处理后的类别信息
-            allGtypeMsg: [],
-            // 可选择的商品名称
-            // selectgname: [],
-            // 所有添加value后的商品信息
-            // allGoodsMsg: [],
-            // goodsname: '',
-            // 类别表的信息
+            // 类别表的数据
             allTgoods: [],
             // 商品名，数量，所属类别
             selldata: [],
-            // 类别名，类别的总数量
-            selltypedata: []
+            // 类别名，类别的销售总数量
+            selltypedata: [],
+            // 库存表的数据
+            storedata:[],
+            // 类别名，类别的库存总数量
+            storetype:[]
         }
     },
     components: {
@@ -93,14 +88,17 @@ export default {
         income: ChartIncome
     },
     created() {
-        // this.getGoods()
         this.getGtype()
         this.getSellData()
+        this.getStoreData()
     },
     methods: {
         // 销售子组件
         showSell() {
             this.switchid = 1
+            if (this.flag == true) {
+                this.flag = false
+            }
             let sell = this.selldata
             // 在指定时间内的
             let after = (this.afterdate != null && this.afterdate != '') ? moment(this.afterdate).format('YYYY-MM-DD') : ''
@@ -129,30 +127,47 @@ export default {
         // 库存子组件
         showStore() {
             this.switchid = 2
+            this.flag = true
+            // 库存的信息
+            let store = this.storedata
+            // 库存信息添加商品的类别名  商品名，类别名，商品库存数量
+            let len = store.length
+            for(let i = 0; i < len; i++) {
+                store[i].gname = store[i].ugname
+            }
+            store = this.handleGoodsTypeMsg(store, this.allTgoods)
+            for(let i = 0; i < store.length; i++) {
+                store[i].gcount = store[i].scount
+            }
+            // 类别名 + 类别库存总数量
+            this.storetype = this.statisticsType(store)
+            // 指定类别的处理
+            let res = []
+            if (this.goodstype != '') {
+                this.storetype = this.assignGtype(this.storetype, this.goodstype)
+                store = this.assignGtype(store, this.goodstype)
+                res = this.sellFinallHandle(this.storetype, store)
+            } else {
+                res = this.sellFinallHandle(this.storetype, store)
+            }
+            // 所需传递到子组件的数据
+            this.transstoredata = res
+            // 重置条件
+            store = this.storedata
         },
         // 利润子组件
         showIncome() {
             this.switchid = 3
+            if (this.flag == true) {
+                this.flag = false
+            }
         },
-        // 获取商品名称
-        // async getGoods() {
-        //     const res = await this.$http.get("showGoods");
-        //     this.selectgname = res.data;
-        //     let key = "value";
-        //     for (let i = 0; i < this.selectgname.length; i++) {
-        //         let value = this.selectgname[i].gname;
-        //         this.selectgname[i][key] = value;
-        //     }
-        //     this.allGoodsMsg = this.selectgname
-        // },
-        // querygnameSearch(queryString, cb) {
-        //     var selectgname = this.selectgname;
-        //     var results = queryString ?
-        //         selectgname.filter(this.createFilter(queryString)) :
-        //         selectgname;
-        //     // 调用 callback 返回建议列表的数据
-        //     cb(results);
-        // },
+        // 获取库存信息
+        async getStoreData(){
+            const res = await this.$http.get('showStore')
+            this.storedata = res.data
+        },
+        // 类别名过滤
         createFilter(queryString) {
             return (item) => {
                 return item.value.toUpperCase().match(queryString.toUpperCase());
@@ -167,52 +182,12 @@ export default {
             // 调用 callback 返回建议列表的数据
             cb(results);
         },
-        // 当选择类别名称时，限制商品的选择，没有选择类别名称（即清除类别名称）时，不限制商品的选择
-        // 获取并处理类别表的信息
+        // 获取类别表的信息
         async getGtype() {
             const res = await this.$http.get('showGoodstype')
             let data = res.data
             this.allTgoods = data
-            let resArr = []
-            data.forEach(e => {
-                for (let i = 0; i < resArr.length; i++) {
-                    if (resArr[i].typename == e.gtname) {
-                        resArr[i].goodsname.push({
-                            value: e.gname
-                        })
-                        return
-                    }
-                }
-                resArr.push({
-                    typename: e.gtname,
-                    goodsname: [{
-                        value: e.gname
-                    }]
-                })
-            })
-            this.allGtypeMsg = resArr
         },
-        // 处理选择类别名称后的事件
-        // handleGtypeSelect() {
-        //     let type = this.goodstype
-        //     let goods = []
-        //     let len = this.allGtypeMsg.length
-        //     for (let i = 0; i < len; i++) {
-        //         if (type == this.allGtypeMsg[i].typename) {
-        //             this.selectgname = this.allGtypeMsg[i].goodsname
-        //         }
-        //     }
-        // },
-        // 处理清除类别名称后的事件
-        // clearGtypeSelect() {
-        //     this.selectgname = this.allGoodsMsg
-        // },
-        // 如果选择了商品再选择类别会清空商品选择框
-        // handleTypeFocus() {
-        //     if (this.goodstype == '' && this.goodsname != '') {
-        //         this.goodsname = ''
-        //     }
-        // },
 
         // 获取销售数据
         async getSellData() {
@@ -362,19 +337,6 @@ export default {
             for (let i = 0; i < len; i++) {
                 if (data[i].gtname == type) {
                     res.push(data[i])
-                }
-            }
-            return res
-        },
-        // 指定商品
-        assignGoods(data, gname) {
-            let res = []
-            let len = data.length
-            for(let i = 0; i < len; i++) {
-                for(let j = 0; j < data[i].gdetail.length; j++) {
-                    if(data[i].gdetail[j].gname == gname) {
-                        res.push(data[i].gdetail[j])
-                    }
                 }
             }
             return res
