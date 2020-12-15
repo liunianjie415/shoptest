@@ -1,10 +1,12 @@
 <template>
 <div style="height:535px">
-    <el-col :span="18" style="height:100%" id="store_ref">
+    <el-col :span="16" style="height:100%" id="store_ref">
     </el-col>
-    <el-col :span="6" style="height:100%">
+    <el-col :span="8" style="height:100%">
         <el-table :data="this.transstoredata" style="width: 100%;margin-left:10px" border>
-            <el-table-column prop="gtname" label="类别名称" width="135">
+            <el-table-column prop="gtname" label="类别名称" width="130">
+            </el-table-column>
+            <el-table-column prop="gtcount" label="类别总库存" width="130">
             </el-table-column>
             <el-table-column label="详细商品库存">
                 <template slot-scope="scope">
@@ -160,7 +162,9 @@ export default {
                                 show: true,
                                 position: 'right',
                                 textStyle: {
-                                    fontSize: 16
+                                    fontSize: "16",
+                                    color: "#fff",
+                                    fontWeight:"bolder"
                                 }
                             }
                         }
@@ -179,6 +183,6 @@ export default {
 
 <style>
 .dialogStore {
-    background: #333;
+    background: #100C2A;
 }
 </style>

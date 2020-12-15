@@ -21,14 +21,14 @@
             <el-row>
                 <el-button type="primary" plain round @click="showSell">查看销量</el-button>
                 <el-button type="primary" plain round @click="showStore">库存剩余</el-button>
-                <el-button type="primary" plain round @click="showIncome">利润情况</el-button>
+                <el-button type="primary" plain round @click="showIncome">利润明细</el-button>
             </el-row>
         </el-col>
     </el-row>
     <el-row>
         <sell v-if="switchid == 1" :transselldata="transselldata"></sell>
         <store v-if="switchid == 2" :transstoredata="transstoredata"></store>
-        <income v-if="switchid == 3"></income>
+        <income v-if="switchid == 3" :transincomedata="transincomedata"></income>
         <div v-if="switchid == 4">
             请选择条件
         </div>
@@ -44,8 +44,10 @@ import moment from 'moment'
 export default {
     data() {
         return {
+            // 需要传递的利润数据 类别名+类别总利润 商品名+商品利润
+            transincomedata: [],
             // 需要传递的库存数据 类别名+其数量  商品名+其数量
-            transstoredata:[],
+            transstoredata: [],
             // 选择库存后，让时间选择控件失效
             flag: false,
             // 需要传递的销售数据 类别名+其数量  商品名+其数量
@@ -77,9 +79,13 @@ export default {
             // 类别名，类别的销售总数量
             selltypedata: [],
             // 库存表的数据
-            storedata:[],
+            storedata: [],
             // 类别名，类别的库存总数量
-            storetype:[]
+            storetype: [],
+            // 销售表的数据 时间+商品名+折后价格
+            sellinfoData: [],
+            // 商品表的数据 商品名+类别名+进价
+            goodsinprice: []
         }
     },
     components: {
@@ -91,6 +97,8 @@ export default {
         this.getGtype()
         this.getSellData()
         this.getStoreData()
+        this.getSellinfoData()
+        this.getGoods()
     },
     methods: {
         // 销售子组件
@@ -100,7 +108,7 @@ export default {
                 this.flag = false
             }
             let sell = this.selldata
-            // 在指定时间内的
+            // 在指定时间内的销售信息
             let after = (this.afterdate != null && this.afterdate != '') ? moment(this.afterdate).format('YYYY-MM-DD') : ''
             let before = (this.beforedate != null && this.beforedate != '') ? moment(this.beforedate).format('YYYY-MM-DD') : ''
             sell = this.handleTimeMsg(sell, after, before)
@@ -132,11 +140,11 @@ export default {
             let store = this.storedata
             // 库存信息添加商品的类别名  商品名，类别名，商品库存数量
             let len = store.length
-            for(let i = 0; i < len; i++) {
+            for (let i = 0; i < len; i++) {
                 store[i].gname = store[i].ugname
             }
             store = this.handleGoodsTypeMsg(store, this.allTgoods)
-            for(let i = 0; i < store.length; i++) {
+            for (let i = 0; i < store.length; i++) {
                 store[i].gcount = store[i].scount
             }
             // 类别名 + 类别库存总数量
@@ -161,9 +169,143 @@ export default {
             if (this.flag == true) {
                 this.flag = false
             }
+            // 时间sdate+商品名gname+折后价格payprice+销售数量paycount [sellinfoData]   || 商品名gname+类别名gtname+进价inprice  [goodsinprice]
+            let sell = this.sellinfoData
+            // 处理时间
+            let after = (this.afterdate != null && this.afterdate != '') ? moment(this.afterdate).format('YYYY-MM-DD') : ''
+            let before = (this.beforedate != null && this.beforedate != '') ? moment(this.beforedate).format('YYYY-MM-DD') : ''
+            sell = this.handleTimeMsg(sell, after, before)
+            // 添加上商品的类别名称及进价
+            sell = this.handleGoodsSellMsg(sell, this.goodsinprice)
+            // 处理为商品名，类别名和利润
+            sell = this.handleSellAddIncome(sell)
+            // 处理为类别名，类别总利润，详情：商品名，商品总利润
+            sell = this.handleSellFinall(sell)
+            // 指定类别的处理
+            let res = []
+            if (this.goodstype != '') {
+                sell = this.assignGtype(sell, this.goodstype)
+                res = sell
+            } else {
+                res = sell
+            }
+            // 所需传递的数据
+            this.transincomedata = res
+            // 重置条件
+            sell = this.sellinfoData
+        },
+        // 处理为类别名，类别总利润，详情：商品名，商品总利润
+        handleSellFinall(data) {
+            let res = []
+            data.forEach((e) => {
+                for (let i = 0; i < res.length; i++) {
+                    if (res[i].gtname == e.gtname) {
+                        res[i].totalincome = (parseFloat(res[i].totalincome) + parseFloat(e.income)).toFixed(2)
+                        res[i].gdetail.push({
+                            gname: e.gname,
+                            income: parseFloat(e.income).toFixed(2)
+                        })
+                        return
+                    }
+                }
+                res.push({
+                    gtname: e.gtname,
+                    totalincome: parseFloat(e.income).toFixed(2),
+                    gdetail: [{
+                        gname: e.gname,
+                        income: parseFloat(e.income).toFixed(2)
+                    }]
+                })
+            })
+            res.forEach((e) => {
+                for (let i = 0; i < e.gdetail.length; i++) {
+                    e.gdetail = this.handleSellDetail(e.gdetail)
+                }
+            })
+            return res
+        },
+        // 处理详情信息的去重
+        handleSellDetail(data) {
+            let res = []
+            data.forEach(e => {
+                for (let i = 0; i < res.length; i++) {
+                    if (res[i].gname == e.gname) {
+                        res[i].income = (parseFloat(res[i].income) + parseFloat(e.income)).toFixed(2)
+                        return
+                    }
+                }
+                res.push({
+                    gname: e.gname,
+                    income: e.income
+                })
+            })
+            return res
+        },
+        // 处理为商品名，类别名和利润
+        handleSellAddIncome(data) {
+            let res = []
+            let len = data.length
+            for (let i = 0; i < len; i++) {
+                res.push({
+                    gtname: data[i].gtname,
+                    gname: data[i].gname,
+                    income: parseFloat(data[i].payprice - data[i].inprice * data[i].paycount).toFixed(2)
+                })
+            }
+            return res
+        },
+        // 销售处理后添加商品进价等信息
+        handleGoodsSellMsg(data1, data2) {
+            data1.forEach((e) => {
+                data2.forEach((el) => {
+                    if (e.gname == el.gname) {
+                        e.gtname = el.gtname
+                        e.inprice = el.inprice
+                    }
+                })
+            })
+            return data1
+        },
+        // 获取并处理销售表的信息
+        async getSellinfoData() {
+            const res = await this.$http.get('showSell')
+            let data = res.data
+            let len = data.length
+            let sellinfo = []
+            for (let i = 0; i < len; i++) {
+                sellinfo.push({
+                    sdate: moment(data[i].sedate).format('YYYY-MM-DD'),
+                    gname: data[i].uname,
+                    payprice: parseFloat(data[i].seeprice).toFixed(2),
+                    paycount: data[i].secount
+                })
+            }
+            this.sellinfoData = sellinfo
+        },
+        // 获取并处理商品表的信息，需要使用进价
+        async getGoods() {
+            const res = await this.$http.get('showGoods')
+            let goodsinfo = res.data
+            let len = goodsinfo.length
+            let cur = []
+            for (let i = 0; i < len; i++) {
+                cur.push({
+                    gname: goodsinfo[i].gname,
+                    inprice: parseFloat(goodsinfo[i].giprice).toFixed(2)
+                })
+            }
+            let goods = this.allTgoods
+            cur.forEach((e) => {
+                goods.forEach((el) => {
+                    if (e.gname == el.gname) {
+                        e.gtname = el.gtname
+                    }
+                })
+            })
+            this.goodsinprice = cur
         },
         // 获取库存信息
-        async getStoreData(){
+        async getStoreData() {
             const res = await this.$http.get('showStore')
             this.storedata = res.data
         },
@@ -189,7 +331,7 @@ export default {
             this.allTgoods = data
         },
 
-        // 获取销售数据
+        // 获取销售信息表数据
         async getSellData() {
             const {
                 data: ret

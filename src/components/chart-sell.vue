@@ -1,16 +1,16 @@
 <template>
 <div style="height:535px">
-    <el-col :span="14" style="height:100%" id="sell_ref">
+    <el-col :span="16" style="height:100%" id="sell_ref">
     </el-col>
-    <el-col :span="10">
-        <el-table :data="this.transselldata" style="width: 100%; margin-left:15px" border>
+    <el-col :span="8">
+        <el-table :data="this.transselldata" style="width: 100%; margin-left:10px" border>
             <el-table-column prop="gtname" label="类别名称" width="130">
             </el-table-column>
             <el-table-column prop="gtcount" label="销售总额" width="130">
             </el-table-column>
             <el-table-column label="销售详情">
                 <template slot-scope="scope">
-                    <el-button @click="showDetail(scope.row)">商品占比</el-button>
+                    <el-button @click="showDetail(scope.row)" type="primary">商品占比</el-button>
                 </template>
             </el-table-column>
         </el-table>
