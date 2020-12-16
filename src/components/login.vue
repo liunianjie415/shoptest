@@ -33,6 +33,12 @@ export default {
             const resultpwd = data.some((value, index, data) => {
                 return value.ename == this.formdata.username && value.epassword == this.formdata.password
             })
+            let eauth = ''
+            for (let i = 0; i < data.length; i++) {
+                if (this.formdata.username == data[i].ename) {
+                    eauth = data[i].eauth
+                }
+            }
             if (this.formdata.username == '') {
                 this.$message.error('账号不能为空！')
             } else {
@@ -46,8 +52,9 @@ export default {
                             this.$message.error('密码不正确')
                         } else {
                             localStorage.setItem('user', this.formdata.username)
+                            localStorage.setItem('authorise', eauth)
                             this.$message({
-                                message: '恭喜你，登陆成功',
+                                message: '欢迎' + this.formdata.username + '，登陆成功',
                                 type: 'success'
                             })
                             this.$router.push({

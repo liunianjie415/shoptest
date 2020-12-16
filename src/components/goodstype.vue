@@ -117,7 +117,7 @@ export default {
                 gtname: '',
                 uid: '',
                 gname: ''
-            },
+            }
         }
     },
     created() {

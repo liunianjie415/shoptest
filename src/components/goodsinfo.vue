@@ -5,7 +5,7 @@
             <el-input placeholder="请输入商品名称" clearable class="searchinput" v-model="query" @keyup.enter.native="goodsSearch">
                 <el-button slot="append" icon="el-icon-search" @click="goodsSearch"></el-button>
             </el-input>
-            <el-button type="success" class="addbtn" @click="showGoodsdialog">添加商品</el-button>
+            <el-button type="success" class="addbtn" @click="showGoodsdialog" :disabled="goodsOnly">添加商品</el-button>
         </el-col>
     </el-row>
     <el-table :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)" border style="width: 100%" class="gtable">
@@ -23,8 +23,8 @@
         </el-table-column>
         <el-table-column label="操作">
             <template slot-scope="scope">
-                <el-button type="primary" icon="el-icon-edit" circle plain @click="showEditGoodsDialog(scope.row)"></el-button>
-                <el-button type="danger" icon="el-icon-delete" circle plain @click="showDelGoodsDialog(scope.row)"></el-button>
+                <el-button type="primary" icon="el-icon-edit" circle plain @click="showEditGoodsDialog(scope.row)" :disabled="goodsOnly"></el-button>
+                <el-button type="danger" icon="el-icon-delete" circle plain @click="showDelGoodsDialog(scope.row)" :disabled="goodsOnly"></el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -101,13 +101,34 @@ export default {
                 giprice:'',
                 gprice: '',
                 gid: ''
-            }
+            },
+            // 权限
+            authorise:'',
+            goodsOnly:false
         }
+    },
+    beforeCreate(){
     },
     created() {
         this.getData()
+        this.authorise = localStorage.getItem('authorise')
+        this.judgeauth(this.authorise)
     },
     methods: {
+        // 判断权限
+        judgeauth(authorise) {
+            let flag = authorise
+            switch (flag) {
+                case "进货管理员":
+                    this.goodsOnly = true
+                    break;
+                case "折扣管理员":
+                    this.goodsOnly = true
+                    break;
+                default:
+                    this.goodsOnly = false
+            }
+        },
         // 获取数据,渲染
         async getData() {
             const res = await this.$http.get('showGoods')

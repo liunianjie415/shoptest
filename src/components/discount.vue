@@ -216,7 +216,7 @@ export default {
             for (let i = 0; i < data.length; i++) {
                 data[i].dbdate = moment(data[i].dbdate).format('YYYY-MM-DD HH:mm:ss')
                 data[i].dedate = moment(data[i].dedate).format('YYYY-MM-DD HH:mm:ss')
-                data[i].dstate = data[i].dstate === "false" ? false : true
+                data[i].dstate = moment(data[i].dedate).isBefore(moment()) ? false: true
             }
             this.tableData = data
             this.total = this.tableData.length
@@ -229,7 +229,7 @@ export default {
             for (let i = 0; i < data.length; i++) {
                 data[i].dbdate = moment(data[i].dbdate).format('YYYY-MM-DD HH:mm:ss')
                 data[i].dedate = moment(data[i].dedate).format('YYYY-MM-DD HH:mm:ss')
-                data[i].dstate = data[i].dstate === "false" ? false : true
+                data[i].dstate = moment(data[i].dedate).isBefore(moment()) ? false: true
             }
             this.tableData = data
             this.total = this.tableData.length

@@ -186,46 +186,52 @@ export default {
                     senum: str
                 });
             }
-            const res = await this.$http.post('addSell', commitdata)
-            const status = res.status
-            // 提交到sell表后，处理store的数量
-            // scount,ugname
-            let handlestore = [];
-            let storelength = this.storeArr.length;
-            for (let i = 0; i < storelength; i++) {
-                for (let j = 0; j < commitdata.length; j++) {
-                    if (commitdata[j].uname == this.storeArr[i].ugname) {
-                        handlestore.push({
-                            scount: this.storeArr[i].scount - commitdata[j].secount,
-                            ugname: this.storeArr[i].ugname,
-                        })
+            if (commitdata.length != 0) {
+                let res = await this.$http.post('addSell', commitdata)
+                let status = res.status
+                // 提交到sell表后，处理store的数量
+                // scount,ugname
+                let handlestore = [];
+                let storelength = this.storeArr.length;
+                for (let i = 0; i < storelength; i++) {
+                    for (let j = 0; j < commitdata.length; j++) {
+                        if (commitdata[j].uname == this.storeArr[i].ugname) {
+                            handlestore.push({
+                                scount: this.storeArr[i].scount - commitdata[j].secount,
+                                ugname: this.storeArr[i].ugname,
+                            })
+                        }
                     }
                 }
-            }
+                // 添加信息到库存信息表中
+                let obj = {}
+                let finallArr = []
+                let len = handlestore.length
+                for (let i = 0; i < len; i++) {
+                    obj = this.changecount(this.storeArr, handlestore[i])
+                    finallArr.push(obj)
+                    obj = {}
+                }
+                this.insertMessage(finallArr)
 
-            // 添加信息到库存信息表中
-            let obj = {}
-            let finallArr = []
-            let len = handlestore.length
-            for(let i = 0; i < len; i++) {
-                obj = this.changecount(this.storeArr, handlestore[i])
-                finallArr.push(obj)
-                obj = {}
-            }
-            this.insertMessage(finallArr)
-
-
-            const res1 = await this.$http.post('handlecount', handlestore)
-            const status1 = res1.status
-            if (status == 200 && status1 == 200) {
-                this.$message.success("账单提交成功,账单编号为："+ str +"，本次消费为：" + this.billtotal + "￥")
-                this.tableData = []
-                this.total = 0
-                this.billtotal = 0
-                this.nbilltotal = 0
+                const res1 = await this.$http.post('handlecount', handlestore)
+                const status1 = res1.status
+                if (status == 200 && status1 == 200) {
+                    this.$message.success("账单提交成功,账单编号为：" + str + "，本次消费：" + this.billtotal + "￥")
+                    this.tableData = []
+                    this.total = 0
+                    this.billtotal = 0
+                    this.nbilltotal = 0
+                } else {
+                    this.$message.warning("账单提交失败")
+                }
             } else {
-                this.$message.warning("账单提交失败")
+                this.$message({
+                    message: '账单为空',
+                    type: 'warning'
+                })
             }
+
         },
         // 获取库存信息 
         async getStore() {
@@ -612,5 +618,4 @@ export default {
     border-radius: 28px;
     box-shadow: 3px 3px 6px black;
 }
-
 </style>

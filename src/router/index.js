@@ -9,7 +9,6 @@ import PRO from '@/components/provider.vue'
 import SINFO from '@/components/sellinfo.vue'
 import SSTAT from '@/components/sellstat.vue'
 import EINFO from '@/components/empinfo.vue'
-import EAUTH from '@/components/empauthorize.vue'
 import DISC from '@/components/discount.vue'
 import BILLS from '@/components/bills.vue'
 import SOUT from '@/components/sellout.vue'
@@ -23,10 +22,6 @@ export default new Router({
       path: '/',
       component: Login
     },
-    // {
-    //   path: '/login',
-    //   component: Login
-    // },
     {
       name: 'home',
       path: '/home',
@@ -65,10 +60,6 @@ export default new Router({
           name: 'einfo',
           path: '/einfo',
           component: EINFO
-        }, {
-          name: 'eauth',
-          path: '/eauth',
-          component: EAUTH
         }, {
           name: 'disc',
           path: '/disc',
