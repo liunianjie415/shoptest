@@ -117,11 +117,9 @@ export default {
             selecttype: [{
                 "value": "超级管理员"
             }, {
-                "value": "库存管理员"
+                "value": "进货管理员"
             }, {
                 "value": "普通员工"
-            }, {
-                "value": "供应商管理员"
             }, {
                 "value": "折扣管理员"
             }],
