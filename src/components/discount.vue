@@ -13,15 +13,15 @@
         </el-table-column>
         <el-table-column prop="did" label="折扣编号" width="80">
         </el-table-column>
-        <el-table-column prop="dname" label="折扣名称" width="120">
+        <el-table-column prop="dname" label="折扣名称" width="140">
         </el-table-column>
-        <el-table-column prop="ugname" label="商品名称" width="120">
+        <el-table-column prop="ugname" label="商品名称" width="140">
         </el-table-column>
         <el-table-column prop="ddesc" label="打折力度" width="140">
         </el-table-column>
-        <el-table-column prop="dbdate" label="起始时间" width="170">
+        <el-table-column prop="dbdate" label="起始时间" width="180">
         </el-table-column>
-        <el-table-column prop="dedate" label="结束时间" width="170">
+        <el-table-column prop="dedate" label="结束时间" width="180">
         </el-table-column>
         <el-table-column label="状态" width="80">
             <template slot-scope="scope">

@@ -13,11 +13,11 @@
         </el-table-column>
         <el-table-column prop="pid" label="供应商编号" width="100">
         </el-table-column>
-        <el-table-column prop="pname" label="供应商名称" width="200">
+        <el-table-column prop="pname" label="供应商名称" width="240">
         </el-table-column>
-        <el-table-column prop="paddr" label="供应商地址" width="270">
+        <el-table-column prop="paddr" label="供应商地址" width="300">
         </el-table-column>
-        <el-table-column prop="ptel" label="供应商电话" width="160">
+        <el-table-column prop="ptel" label="供应商电话" width="180">
         </el-table-column>
         <el-table-column label="操作">
             <template slot-scope="scope">

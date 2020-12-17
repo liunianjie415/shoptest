@@ -11,13 +11,13 @@
     <el-table :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)" style="width: 100%">
         <el-table-column type="index" :index='indexMethod' label="#" width="60">
         </el-table-column>
-        <el-table-column prop="sid" label="库存编号" width="100">
+        <el-table-column prop="sid" label="库存编号" width="120">
         </el-table-column>
-        <el-table-column prop="ugname" label="商品名称" width="180">
+        <el-table-column prop="ugname" label="商品名称" width="240">
         </el-table-column>
         <el-table-column prop="scount" label="库存数量" width="120">
         </el-table-column>
-        <el-table-column prop="pname" label="供应商名称" width="180">
+        <el-table-column prop="pname" label="供应商名称" width="240">
         </el-table-column>
         <el-table-column label="操作">
             <template slot-scope="scope">
