@@ -78,20 +78,21 @@ export default {
 <style>
 .login-wrap {
     height: 100%;
-    background:linear-gradient(to left bottom, #C7F6FD,#1166FA,#B837D7);
+    background:linear-gradient(to left bottom,#C7F6FD,#1166FA,#B837D7,#999);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .login-wrap .login-form {
-    background:linear-gradient(left top, #EAE5C9, #6CC6CB);
+    /* background:linear-gradient(to left top, #EAE5C9, #6CC6CB); */
+    background: rgba(255, 255, 255, 0.6);
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2);
     border-top: 1px solid rgba(255, 255, 255, 0.8);
     border-left: 1px solid rgba(255, 255, 255, 0.8);
     width: 400px;
     padding: 30px;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 .login-wrap .login-form .login-btn {
