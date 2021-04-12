@@ -11,6 +11,28 @@ import MyHttpServer from '@/plugins/http.js'
 Vue.use(ElementUI)
 Vue.use(MyHttpServer)
 
+Vue.prototype.$message = function (msg) {
+  ElementUI.Message(msg)
+}
+Vue.prototype.$message.success = function (msg) {
+  return ElementUI.Message.success({
+    message: msg,
+    duration: 1500
+  })
+}
+Vue.prototype.$message.warning = function (msg) {
+  return ElementUI.Message.warning({
+    message: msg,
+    duration: 1500
+  })
+}
+Vue.prototype.$message.error = function (msg) {
+  return ElementUI.Message.error({
+    message: msg,
+    duration: 1500
+  })
+}
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
